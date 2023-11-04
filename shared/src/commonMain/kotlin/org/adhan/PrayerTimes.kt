@@ -18,6 +18,43 @@ data class PrayerTimes(
     val calculationParameters: CalculationParameters
 ){
 
+
+    fun currentPrayer(): Prayer {
+        val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        return when {
+            now >= isha -> Prayer.Isha
+            now >= maghrib -> Prayer.Maghrib
+            now >= asr -> Prayer.Asr
+            now >= dhuhr -> Prayer.Dhuhr
+            now >= sunrise -> Prayer.Sunrise
+            now >= fajr -> Prayer.Fajr
+            else -> Prayer.None
+        }
+    }
+
+    fun nextPrayer(time: LocalDateTime): Prayer {
+        return when {
+            time < fajr -> Prayer.Fajr
+            time < sunrise -> Prayer.Sunrise
+            time < dhuhr -> Prayer.Dhuhr
+            time < asr -> Prayer.Asr
+            time < maghrib -> Prayer.Maghrib
+            time < isha -> Prayer.Isha
+            else -> Prayer.None
+        }
+    }
+
+    fun timeForPrayer(prayer: Prayer):  LocalDateTime? {
+        return when (prayer) {
+            Prayer.Fajr -> fajr
+            Prayer.Sunrise -> sunrise
+            Prayer.Dhuhr -> dhuhr
+            Prayer.Asr -> asr
+            Prayer.Maghrib -> maghrib
+            Prayer.Isha -> isha
+            Prayer.None -> null
+        }
+    }
     fun seasonAdjustedMorningTwilight(
         latitude: Double,
         dayOfYear: Int,

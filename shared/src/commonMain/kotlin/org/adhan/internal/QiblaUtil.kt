@@ -8,9 +8,9 @@ import kotlin.math.tan
 
 class QiblaUtil {
     companion object {
-        private val Makkah = Coordinates(21.4225241, 39.8261818)
+        private val Makkah = org.adhan.Coordinates(21.4225241, 39.8261818)
 
-        fun calculateQiblaDirection(coordinates: Coordinates): Double {
+        fun calculateQiblaDirection(coordinates: org.adhan.Coordinates): Double {
             // Equation from "Spherical Trigonometry For the use of colleges and schools" page 50
             val longitudeDelta = toRadians(Makkah.longitude) - toRadians(coordinates.longitude)
             val latitudeRadians = toRadians(coordinates.latitude)
@@ -22,5 +22,4 @@ class QiblaUtil {
             return DoubleUtil.unwindAngle(toDegrees(angle))
         }
     }
-    data class Coordinates(val latitude: Double, val longitude: Double)
 }

@@ -19,6 +19,10 @@ data class PrayerTimes(
 ){
 
 
+    fun PrayerTimes.tomorrow() {
+
+
+    }
     fun currentPrayer(): Prayer {
         val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
         return when {

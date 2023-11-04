@@ -5,18 +5,17 @@ import org.adhan.data.DateComponents
 import kotlin.math.abs
 import kotlin.math.round
 
-
-data class PrayerTimes(
-    val fajr: LocalDateTime,
-    val sunrise: LocalDateTime,
-    val dhuhr: LocalDateTime,
-    val asr: LocalDateTime,
-    val maghrib: LocalDateTime,
-    val isha: LocalDateTime,
+class PrayerTimes(
     val coordinates: Coordinates,
     val dateComponents: DateComponents,
-    val calculationParameters: CalculationParameters
+    val calculationParameters: CalculationParameters,
 ){
+    val fajr: LocalDateTime? = null
+    val sunrise: LocalDateTime? = null
+    val dhuhr: LocalDateTime? = null
+    val asr: LocalDateTime? = null
+    val maghrib: LocalDateTime? = null
+    val isha: LocalDateTime? = null
 
 
     fun PrayerTimes.tomorrow() {
@@ -64,7 +63,7 @@ data class PrayerTimes(
         dayOfYear: Int,
         year: Int,
         sunrise: LocalDateTime,
-        timeZone: TimeZone
+        timeZone: TimeZone,
     ): LocalDateTime {
         val a = 75 + ((28.65 / 55.0) * kotlin.math.abs(latitude))
         val b = 75 + ((19.44 / 55.0) * kotlin.math.abs(latitude))
@@ -96,7 +95,7 @@ data class PrayerTimes(
         dayOfYear: Int,
         year: Int,
         sunset: LocalDateTime,
-        timeZone: TimeZone
+        timeZone: TimeZone,
     ): LocalDateTime {
         val a = 75 + ((25.60 / 55.0) * abs(latitude))
         val b = 75 + ((2.050 / 55.0) * abs(latitude))

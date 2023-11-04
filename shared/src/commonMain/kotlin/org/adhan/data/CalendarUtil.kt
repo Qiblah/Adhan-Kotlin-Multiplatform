@@ -60,5 +60,4 @@ object CalendarUtil {
         return resolveTime(components.year, components.month, components.day)
     }
 
-    data class DateComponents(val year: Int, val month: Int, val day: Int)
 }

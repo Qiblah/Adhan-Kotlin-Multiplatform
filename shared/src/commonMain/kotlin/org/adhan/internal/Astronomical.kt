@@ -1,5 +1,6 @@
 package org.adhan.internal
 
+import org.adhan.Coordinates
 import org.adhan.internal.DoubleUtil.closestAngle
 import org.adhan.internal.DoubleUtil.toDegrees
 import org.adhan.internal.DoubleUtil.toRadians
@@ -184,7 +185,7 @@ object Astronomical {
         /* Equation from Astronomical Algorithms page 93 */
         val term1 = sin(toRadians(φ)) * sin(toRadians(δ))
         val term2 = cos(toRadians(φ)) * cos(toRadians(δ)) * cos(toRadians(H))
-        return asin(term1 + term2).toDegrees()
+        return toDegrees(asin(term1 + term2))
     }
 
     /**

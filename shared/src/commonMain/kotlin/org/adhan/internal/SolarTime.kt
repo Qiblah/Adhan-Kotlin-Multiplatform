@@ -1,6 +1,9 @@
 package org.adhan.internal
 
 import org.adhan.data.CalendarUtil
+import org.adhan.Coordinates
+import org.adhan.internal.DoubleUtil.toDegrees
+import org.adhan.internal.DoubleUtil.toRadians
 
 class SolarTime(
     today: CalendarUtil.DateComponents,
@@ -17,7 +20,7 @@ class SolarTime(
     private val approximateTransit: Double
 
     init {
-        val julianDate = today.toJulianDay()
+        val julianDate = CalendricalHelper.julianDay(today.year, today.month, today.day)
 
         prevSolar = SolarCoordinates(julianDate - 1)
         solar = SolarCoordinates(julianDate)
@@ -39,8 +42,8 @@ class SolarTime(
     // hours from transit
     fun afternoon(shadowLength: ShadowLength): Double {
         val tangent = kotlin.math.abs(observer.latitude - solar.declination)
-        val inverse = shadowLength.shadowLength + kotlin.math.tan(kotlin.math.radians(tangent))
-        val angle = kotlin.math.degrees(kotlin.math.atan(1.0 / inverse))
+        val inverse = shadowLength.shadowLength + kotlin.math.tan(toRadians(tangent))
+        val angle = toDegrees(kotlin.math.atan(1.0 / inverse))
 
         return hourAngle(angle, true)
     }

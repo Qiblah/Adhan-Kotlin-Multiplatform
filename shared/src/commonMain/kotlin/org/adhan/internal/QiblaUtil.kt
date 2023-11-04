@@ -1,23 +1,26 @@
 package org.adhan.internal
 
+import org.adhan.internal.DoubleUtil.toDegrees
+import org.adhan.internal.DoubleUtil.toRadians
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.tan
+
 class QiblaUtil {
     companion object {
-        private val MAKKAH = Coordinates(21.4225241, 39.8261818)
+        private val Makkah = Coordinates(21.4225241, 39.8261818)
 
         fun calculateQiblaDirection(coordinates: Coordinates): Double {
             // Equation from "Spherical Trigonometry For the use of colleges and schools" page 50
-            val longitudeDelta = Math.toRadians(MAKKAH.longitude) - Math.toRadians(coordinates.longitude)
-            val latitudeRadians = Math.toRadians(coordinates.latitude)
-            val term1 = kotlin.math.sin(longitudeDelta)
-            val term2 = kotlin.math.cos(latitudeRadians) * kotlin.math.tan(Math.toRadians(MAKKAH.latitude))
-            val term3 = kotlin.math.sin(latitudeRadians) * kotlin.math.cos(longitudeDelta)
+            val longitudeDelta = toRadians(Makkah.longitude) - toRadians(coordinates.longitude)
+            val latitudeRadians = toRadians(coordinates.latitude)
+            val term1 = sin(longitudeDelta)
+            val term2 = cos(latitudeRadians) * tan(toRadians(Makkah.latitude))
+            val term3 = sin(latitudeRadians) * cos(longitudeDelta)
 
             val angle = kotlin.math.atan2(term1, term2 - term3)
-            return DoubleUtil.unwindAngle(kotlin.math.degrees(angle))
+            return DoubleUtil.unwindAngle(toDegrees(angle))
         }
     }
+    data class Coordinates(val latitude: Double, val longitude: Double)
 }
-
-data class Coordinates(val latitude: Double, val longitude: Double)
-
-fun Double.toDegrees(): Double = this * (180.0 / kotlin.math.PI)

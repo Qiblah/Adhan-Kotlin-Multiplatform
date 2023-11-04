@@ -17,4 +17,12 @@ object DoubleUtil {
             angle - (360 * kotlin.math.round(angle / 360))
         }
     }
+
+    fun toRadians(degrees: Double): Double {
+        return degrees * (kotlin.math.PI / 180.0)
+    }
+
+    fun toDegrees(radians: Double): Double {
+        return radians * (180.0 / kotlin.math.PI)
+    }
 }

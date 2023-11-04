@@ -1,5 +1,7 @@
 package org.adhan
 
+import org.adhan.internal.ShadowLength
+
 
 /**
  * Madhab for determining how Asr is calculated.
@@ -8,17 +10,17 @@ enum class Madhab {
     /**
      * Shafi Madhab
      */
-    shafi,
+    Shafi,
 
     /**
      * Hanafi Madhab
      */
-    hanafi;
+    Hanafi;
 
     fun getShadowLength(): ShadowLength {
         return when (this) {
-            shafi -> ShadowLength.SINGLE
-            hanafi -> ShadowLength.DOUBLE
+            Shafi -> ShadowLength.SINGLE
+            Hanafi -> ShadowLength.DOUBLE
         }
     }
 }

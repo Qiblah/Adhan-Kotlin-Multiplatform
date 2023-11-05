@@ -2,7 +2,6 @@ package org.adhan
 
 import org.adhan.internal.ShadowLength
 
-
 /**
  * Madhab for determining how Asr is calculated.
  */

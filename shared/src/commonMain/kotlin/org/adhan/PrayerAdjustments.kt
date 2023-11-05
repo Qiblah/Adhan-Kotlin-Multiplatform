@@ -5,11 +5,11 @@ package org.adhan
  * These values are added (or subtracted) from the prayer time that is calculated before
  * returning the result times.
  */
-class PrayerAdjustments(
-    var fajr: Int = 0,
-    var sunrise: Int = 0,
-    var dhuhr: Int = 0,
-    var asr: Int = 0,
-    var maghrib: Int = 0,
-    var isha: Int = 0
+data class PrayerAdjustments(
+    val fajr: Int = 0,
+    val sunrise: Int = 0,
+    val dhuhr: Int = 0,
+    val asr: Int = 0,
+    val maghrib: Int = 0,
+    val isha: Int = 0
 )

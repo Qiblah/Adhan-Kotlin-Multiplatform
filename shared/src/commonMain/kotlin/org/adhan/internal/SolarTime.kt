@@ -1,6 +1,5 @@
 package org.adhan.internal
 
-import org.adhan.data.CalendarUtil
 import org.adhan.Coordinates
 import org.adhan.data.DateComponents
 import org.adhan.internal.DoubleUtil.toDegrees

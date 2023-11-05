@@ -8,41 +8,43 @@ import kotlin.math.round
 class PrayerTimes(
     val coordinates: Coordinates,
     val dateComponents: DateComponents,
-    val calculationParameters: CalculationParameters,
-){
+    val calculationParameters: CalculationParameters
+) {
     val fajr: LocalDateTime? = null
+
     val sunrise: LocalDateTime? = null
+
     val dhuhr: LocalDateTime? = null
+
     val asr: LocalDateTime? = null
+
     val maghrib: LocalDateTime? = null
+
     val isha: LocalDateTime? = null
 
 
-    fun PrayerTimes.tomorrow() {
 
-
-    }
     fun currentPrayer(): Prayer {
         val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
         return when {
-            now >= isha -> Prayer.Isha
-            now >= maghrib -> Prayer.Maghrib
-            now >= asr -> Prayer.Asr
-            now >= dhuhr -> Prayer.Dhuhr
-            now >= sunrise -> Prayer.Sunrise
-            now >= fajr -> Prayer.Fajr
+            now >= isha!! -> Prayer.Isha
+            now >= maghrib!! -> Prayer.Maghrib
+            now >= asr!! -> Prayer.Asr
+            now >= dhuhr!! -> Prayer.Dhuhr
+            now >= sunrise!! -> Prayer.Sunrise
+            now >= fajr!! -> Prayer.Fajr
             else -> Prayer.None
         }
     }
 
     fun nextPrayer(time: LocalDateTime): Prayer {
         return when {
-            time < fajr -> Prayer.Fajr
-            time < sunrise -> Prayer.Sunrise
-            time < dhuhr -> Prayer.Dhuhr
-            time < asr -> Prayer.Asr
-            time < maghrib -> Prayer.Maghrib
-            time < isha -> Prayer.Isha
+            time < fajr!! -> Prayer.Fajr
+            time < sunrise!! -> Prayer.Sunrise
+            time < dhuhr!! -> Prayer.Dhuhr
+            time < asr!! -> Prayer.Asr
+            time < maghrib!! -> Prayer.Maghrib
+            time < isha!! -> Prayer.Isha
             else -> Prayer.None
         }
     }
@@ -121,7 +123,8 @@ class PrayerTimes(
 
         // Convert back to LocalDateTime
         return adjustedInstant.toLocalDateTime(timeZone)
-    }    fun daysSinceSolstice(dayOfYear: Int, year: Int, latitude: Double): Int {
+    }
+    fun daysSinceSolstice(dayOfYear: Int, year: Int, latitude: Double): Int {
         val northernOffset = 10
         val isLeapYear = year.isLeapYear()
         val southernOffset = if (isLeapYear) 173 else 172

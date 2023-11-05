@@ -1,27 +1,46 @@
 package org.adhan
 
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.plus
 import org.adhan.data.CalendarUtil
 import org.adhan.data.DateComponents
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.seconds
 
 class SunnahTimes(prayerTimes: PrayerTimes) {
-    private val middleOfTheNight: LocalDateTime
-    private val lastThirdOfTheNight: LocalDateTime
+    val middleOfTheNight: LocalDateTime
+    val lastThirdOfTheNight: LocalDateTime
 
     init {
+        // Assuming CalendarUtil.resolveTime returns a LocalDateTime
         val currentPrayerTimesDate = CalendarUtil.resolveTime(prayerTimes.dateComponents)
-        val tomorrowPrayerTimesDate = CalendarUtil.addDays(currentPrayerTimesDate, 1)
+
+        // Add one day to get "tomorrow"
+        val tomorrowPrayerTimesDate = currentPrayerTimesDate + 1.days
+
+        // Assuming we can create a DateComponents instance from a LocalDateTime
+        val tomorrowDateComponents = DateComponents.from(tomorrowPrayerTimesDate)
+
+        // Create PrayerTimes for tomorrow
         val tomorrowPrayerTimes = PrayerTimes(
-            coordinates = prayerTimes.coordinates,
-            dateComponents=DateComponents.fromUTC(tomorrowPrayerTimesDate),
-            calculationParameters =prayerTimes.calculationParameters
+            prayerTimes.coordinates,
+            tomorrowDateComponents,
+            prayerTimes.calculationParameters
         )
 
-        val nightDuration = Duration.seconds(
-            (tomorrowPrayerTimes.fajr.epochSeconds - prayerTimes.maghrib.epochSeconds)
-        )
-        middleOfTheNight = prayerTimes.maghrib.plus(nightDuration.dividedBy(2)).roundedMinute()
-        lastThirdOfTheNight = prayerTimes.maghrib.plus(nightDuration.multipliedBy(2.0 / 3.0)).roundedMinute()
+        // Calculate the duration between Maghrib and Fajr in seconds
+        val nightDurationInSeconds = Duration.between(
+            prayerTimes.maghrib,
+            tomorrowPrayerTimes.fajr
+        ).inWholeSeconds
+
+        // Calculate middle of the night and last third of the night
+        middleOfTheNight = prayerTimes.maghrib.plus((nightDurationInSeconds / 2).seconds)
+        lastThirdOfTheNight = prayerTimes.maghrib.plus((nightDurationInSeconds * 2 / 3).seconds)
+
+        // If you have rounding to the nearest minute in CalendarUtil, apply it here:
+        // middleOfTheNight = CalendarUtil.roundToNearestMinute(middleOfTheNight)
+        // lastThirdOfTheNight = CalendarUtil.roundToNearestMinute(lastThirdOfTheNight)
     }
-}
+}}

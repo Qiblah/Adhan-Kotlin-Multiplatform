@@ -2,7 +2,6 @@ package org.adhan.data
 
 import kotlinx.datetime.*
 
-
 object CalendarUtil {
 
     /**

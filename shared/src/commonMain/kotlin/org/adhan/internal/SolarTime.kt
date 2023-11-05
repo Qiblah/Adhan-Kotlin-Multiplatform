@@ -35,10 +35,6 @@ class SolarTime(
         sunset = Astronomical.correctedHourAngle(approximateTransit, solarAltitude, coordinates, true, solar.apparentSiderealTime, solar.rightAscension, prevSolar.rightAscension, nextSolar.rightAscension, solar.declination, prevSolar.declination, nextSolar.declination)
     }
 
-    fun hourAngle(angle: Double, afterTransit: Boolean): Double {
-        return Astronomical.correctedHourAngle(approximateTransit, angle, observer, afterTransit, solar.apparentSiderealTime, solar.rightAscension, prevSolar.rightAscension, nextSolar.rightAscension, solar.declination, prevSolar.declination, nextSolar.declination)
-    }
-
     // hours from transit
     fun afternoon(shadowLength: ShadowLength): Double {
         val tangent = kotlin.math.abs(observer.latitude - solar.declination)
@@ -46,5 +42,9 @@ class SolarTime(
         val angle = toDegrees(kotlin.math.atan(1.0 / inverse))
 
         return hourAngle(angle, true)
+    }
+
+    private fun hourAngle(angle: Double, afterTransit: Boolean): Double {
+        return Astronomical.correctedHourAngle(approximateTransit, angle, observer, afterTransit, solar.apparentSiderealTime, solar.rightAscension, prevSolar.rightAscension, nextSolar.rightAscension, solar.declination, prevSolar.declination, nextSolar.declination)
     }
 }

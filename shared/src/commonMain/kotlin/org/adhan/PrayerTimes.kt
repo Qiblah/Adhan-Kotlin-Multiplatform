@@ -1,14 +1,17 @@
 package org.adhan
 
 import kotlinx.datetime.*
+import org.adhan.data.CalendarUtil
 import org.adhan.data.DateComponents
+import org.adhan.internal.Astronomical
+import org.adhan.internal.SolarTime
 import kotlin.math.abs
 import kotlin.math.round
 
 class PrayerTimes(
     val coordinates: Coordinates,
     val dateComponents: DateComponents,
-    val calculationParameters: CalculationParameters
+    val calculationParameters: CalculationParameters,
 ) {
     val fajr: LocalDateTime? = null
 
@@ -22,8 +25,60 @@ class PrayerTimes(
 
     val isha: LocalDateTime? = null
 
+    init {
+        val solarTime = SolarTime(dateComponents, coordinates)
+        val transit = solarTime.transit
+        val sunrise = solarTime.sunrise
+        val sunset = solarTime.sunset
+
+        val fajrAngle = calculationParameters.fajrAngle
+        val ishaAngle = calculationParameters.ishaAngle
+
+        val tomorrow = dateComponents.copy(day = dateComponents.day + 1)
+        val tomorrowSolarTime = SolarTime(tomorrow, coordinates)
+        val tomorrowTransit = tomorrowSolarTime.transit
+
+        val night = tomorrowTransit - transit
+        val safeNight = if (night < 0) 0.0 else night
+
+        val fajrTime = Astronomical.hourAngleTime(sunrise, transit, -fajrAngle, coordinates, false)
+        val ishaTime = Astronomical.hourAngleTime(sunset, tomorrowTransit, ishaAngle, coordinates, true)
+
+        val safeFajr = sunrise - fajrTime
+        val safeIsha = ishaTime - sunset
+
+        val safeFajrDuration = safeFajr.absoluteValue
+        val safeIshaDuration = safeIsha.absoluteValue
+
+        val nightFraction = calculationParameters.nightPortions().let {
+            if (safeNight > 0) {
+                it
+            } else {
+                if (safeFajrDuration > safeIshaDuration) {
+                    it + safeFajrDuration / 60.0
+                } else {
+                    it + safeIshaDuration / 60.0
+                }
+            }
+        }
+
+        val adjustedFajrAngle = fajrAngle + nightFraction * safeNight
+        val adjustedIshaAngle = ishaAngle + nightFraction * safeNight
+
+        val adjustedFajrTime = Astronomical.hourAngleTime(sunrise, transit, -adjustedFajrAngle, coordinates, false)
+        val adjustedIshaTime = Astronomical.hourAngleTime(sunset, tomorrowTransit, adjustedIshaAngle, coordinates, true)
+
+        val safeFajrTime = sunrise - adjustedFajrTime
+        val safeIshaTime = adjustedIshaTime - sunset
+
+        val safeFajrTimeDuration = safeFajrTime.absoluteValue
+        val safeIshaTimeDuration = safeIshaTime.absoluteValue
+
+        val fajrTimeDuration = if (safeFajrTimeDuration < 0) 0.0 else safeFajrTimeDuration
+        val ishaTimeDuration = if (safeIshaTimeDuration < 0) 0.0 else safeIshaTimeDuration
 
 
+    }
     fun currentPrayer(): Prayer {
         val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
         return when {

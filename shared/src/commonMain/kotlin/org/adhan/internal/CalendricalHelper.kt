@@ -16,7 +16,7 @@ object CalendricalHelper {
         )
     }
 
-    fun julianDay(year: Int, month: Int, day: Int, hours: Double): Double {
+    private fun julianDay(year: Int, month: Int, day: Int, hours: Double): Double {
         // Equation from Astronomical Algorithms page 60
         val Y = if (month > 2) year else year - 1
         val M = if (month > 2) month else month + 12

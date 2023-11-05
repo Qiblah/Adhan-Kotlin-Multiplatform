@@ -2,12 +2,12 @@ package org.adhan.internal
 
 object DoubleUtil {
 
-    fun normalizeWithBound(value: Double, max: Double): Double {
-        return value - (max * kotlin.math.floor(value / max))
-    }
-
     fun unwindAngle(value: Double): Double {
         return normalizeWithBound(value, 360.0)
+    }
+
+    private fun normalizeWithBound(value: Double, max: Double): Double {
+        return value - (max * kotlin.math.floor(value / max))
     }
 
     fun closestAngle(angle: Double): Double {

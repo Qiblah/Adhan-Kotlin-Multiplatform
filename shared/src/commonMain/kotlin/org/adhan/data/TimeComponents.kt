@@ -1,6 +1,7 @@
 package org.adhan.data
 
 import kotlinx.datetime.*
+import kotlin.math.floor
 
 data class TimeComponents(
     val hours: Int,
@@ -13,15 +14,22 @@ data class TimeComponents(
                 return null
             }
 
-            val hours = kotlin.math.floor(value).toInt()
-            val minutes = kotlin.math.floor((value - hours) * 60.0).toInt()
-            val seconds = kotlin.math.floor((value - hours - minutes / 60.0) * 3600.0).toInt()
+            val hours = floor(value).toInt()
+            val minutes = floor((value - hours) * 60.0).toInt()
+            val seconds = floor((value - (hours + minutes / 60.0)) * 60 * 60).toInt()
             return TimeComponents(hours, minutes, seconds)
         }
     }
 
     fun dateComponents(date: DateComponents): Instant {
-        val dateTime = LocalDateTime(date.year, date.month, date.day, hours, minutes, seconds)
+        val dateTime = LocalDateTime(
+            year = date.year,
+            monthNumber = date.month,
+            dayOfMonth = date.day,
+            hour = hours,
+            minute = minutes,
+            second = seconds,
+        )
         // Conversion to Instant requires a TimeZone
         return dateTime.toInstant(TimeZone.UTC)
     }

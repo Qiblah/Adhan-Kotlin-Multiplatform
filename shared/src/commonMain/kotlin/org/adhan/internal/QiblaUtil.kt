@@ -3,6 +3,7 @@ package org.adhan.internal
 import org.adhan.Coordinates
 import org.adhan.internal.DoubleUtil.toDegrees
 import org.adhan.internal.DoubleUtil.toRadians
+import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.tan
@@ -20,7 +21,7 @@ class QiblaUtil {
             val term2 = cos(latitudeRadians) * tan(toRadians(Makkah.latitude))
             val term3 = sin(latitudeRadians) * cos(longitudeDelta)
 
-            val angle = kotlin.math.atan2(term1, term2 - term3)
+            val angle = atan2(term1, term2 - term3)
             return DoubleUtil.unwindAngle(toDegrees(angle))
         }
     }

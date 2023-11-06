@@ -9,8 +9,24 @@ import kotlin.math.sin
 
 class SolarCoordinates(julianDay: Double) {
 
+    /**
+     * The declination of the sun, the angle between
+     * the rays of the Sun and the plane of the Earth's
+     * equator, in degrees.
+     */
     val declination: Double
+
+    /**
+     *  Right ascension of the Sun, the angular distance on the
+     * celestial equator from the vernal equinox to the hour circle,
+     * in degrees.
+     */
     val rightAscension: Double
+
+    /**
+     *  Apparent sidereal time, the hour angle of the vernal
+     * equinox, in degrees.
+     */
     val apparentSiderealTime: Double
 
     init {

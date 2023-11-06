@@ -6,11 +6,11 @@ import kotlin.math.abs
 class SunnahTimes(prayerTimes: PrayerTimes) {
 
     /* The midpoint between Maghrib and Fajr */
-    val middleOfTheNight: LocalDateTime
+    private val middleOfTheNight: LocalDateTime
 
     /* The beginning of the last third of the period between Maghrib and Fajr,
          a recommended time to perform Qiyam */
-    val lastThirdOfTheNight: LocalDateTime
+    private val lastThirdOfTheNight: LocalDateTime
 
     init {
         // Assuming we have a timezone. For accurate calculations, it should be the timezone relevant to the prayer times.

@@ -91,6 +91,7 @@ class PrayerTimes(
         // Convert back to LocalDateTime
         return adjustedInstant.toLocalDateTime(timeZone)
     }
+
     fun seasonAdjustedEveningTwilight(
         latitude: Double,
         dayOfYear: Int,
@@ -123,7 +124,7 @@ class PrayerTimes(
         // Convert back to LocalDateTime
         return adjustedInstant.toLocalDateTime(timeZone)
     }
-    fun daysSinceSolstice(dayOfYear: Int, year: Int, latitude: Double): Int {
+    private fun daysSinceSolstice(dayOfYear: Int, year: Int, latitude: Double): Int {
         val northernOffset = 10
         val isLeapYear = isLeapYear(year)
         val southernOffset = if (isLeapYear) 173 else 172

@@ -11,9 +11,9 @@ import kotlin.math.*
 import kotlin.time.Duration
 
 class PrayerTimes(
-    val coordinates: Coordinates,
-    val dateComponents: DateComponents,
-    val calculationParameters: CalculationParameters,
+    coordinates: Coordinates,
+    dateComponents: DateComponents,
+    calculationParameters: CalculationParameters,
 ) {
     var fajr: LocalDateTime? = null
 
@@ -68,8 +68,8 @@ class PrayerTimes(
             }
 
             // Get night length
-            val tomorrowSunrise = tomorrowSunriseComponents.dateComponents(tomorrow)
-            val night = Duration.between(sunsetComponents, tomorrowSunrise)
+            val tomorrowSunrise = tomorrowSunriseComponents!!.dateComponents(tomorrow)
+            val night = tomorrowSunrise.epochSeconds - sunsetComponents!!.epochSeconds
 
             val fajrTimeComponents = TimeComponents.fromDouble(solarTime.hourAngle(-calculationParameters.fajrAngle, false))
             fajrTimeComponents?.let {
@@ -77,7 +77,7 @@ class PrayerTimes(
             }
 
             if (calculationParameters.method == CalculationMethod.MoonSightingCommittee && coordinates.latitude >= 55) {
-                tempFajr = sunriseComponents.minus(night.dividedBy(7000))
+                tempFajr = sunriseComponents
             }
 
             val nightPortions = calculationParameters.nightPortions()
@@ -106,7 +106,7 @@ class PrayerTimes(
             } else {
                 val ishaTimeComponents = TimeComponents.fromDouble(solarTime.hourAngle(-calculationParameters.ishaAngle, true))
                 ishaTimeComponents?.let {
-                    tempIsha = it.dateComponents(date)
+                    tempIsha = it.dateComponents(dateComponents)
                 }
 
                 if (calculationParameters.method == CalculationMethod.MoonSightingCommittee && coordinates.latitude >= 55) {
@@ -114,16 +114,18 @@ class PrayerTimes(
                     tempIsha = sunsetComponents.plus(nightFraction)
                 }
 
-                val safeIsha: Instant
+                val safeIsha: LocalDateTime
                 if (calculationParameters.method == CalculationMethod.MoonSightingCommittee) {
-                    safeIsha = seasonAdjustedEveningTwilight(coordinates.latitude, dayOfYear, year, sunsetComponents)
+                    safeIsha = seasonAdjustedEveningTwilight(coordinates.latitude, dayOfYear,
+                        dateComponents.year, sunsetComponents?.toLocalDateTime(TimeZone.currentSystemDefault())!!
+                        , sunsetComponents)
                 } else {
                     val portion = nightPortions.isha
                     val nightFraction = night.multipliedBy(portion).dividedBy(1000)
                     safeIsha = sunsetComponents.plus(nightFraction)
                 }
 
-                if (tempIsha == null || tempIsha > safeIsha) {
+                if (tempIsha == null || tempIsha!! > safeIsha) {
                     tempIsha = safeIsha
                 }
             }
@@ -139,12 +141,7 @@ class PrayerTimes(
             isha = null
         } else {
             // Assign final times to public struct members with all offsets
-            fajr = roundedMinute(tempFajr.plus(parameters.adjustments.fajr.toLong()))
-            sunrise = roundedMinute(tempSunrise.plus(parameters.adjustments.sunrise.toLong()))
-            dhuhr = roundedMinute(tempDhuhr.plus(parameters.adjustments.dhuhr.toLong()))
-            asr = roundedMinute(tempAsr.plus(parameters.adjustments.asr.toLong()))
-            maghrib = roundedMinute(tempMaghrib.plus(parameters.adjustments.maghrib.toLong()))
-            isha = roundedMinute(tempIsha.plus(parameters.adjustments.isha.toLong()))
+
         }
     }
 

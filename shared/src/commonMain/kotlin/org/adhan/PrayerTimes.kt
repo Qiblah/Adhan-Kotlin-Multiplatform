@@ -2,26 +2,151 @@ package org.adhan
 
 import kotlinx.datetime.*
 import org.adhan.data.CalendarUtil.isLeapYear
+import org.adhan.data.CalendarUtil.resolveTime
+import org.adhan.data.CalendarUtil.roundedMinute
 import org.adhan.data.DateComponents
-import kotlin.math.abs
-import kotlin.math.round
+import org.adhan.data.TimeComponents
+import org.adhan.internal.SolarTime
+import kotlin.math.*
+import kotlin.time.Duration
 
 class PrayerTimes(
     val coordinates: Coordinates,
     val dateComponents: DateComponents,
     val calculationParameters: CalculationParameters,
 ) {
-    val fajr: LocalDateTime? = null
+    var fajr: LocalDateTime? = null
 
-    val sunrise: LocalDateTime? = null
+    var sunrise: LocalDateTime? = null
 
-    val dhuhr: LocalDateTime? = null
+    var dhuhr: LocalDateTime? = null
 
-    val asr: LocalDateTime? = null
+    var asr: LocalDateTime? = null
 
-    val maghrib: LocalDateTime? = null
+    var maghrib: LocalDateTime? = null
 
-    val isha: LocalDateTime? = null
+    var isha: LocalDateTime? = null
+
+    init {
+        var tempFajr: Instant? = null
+        var tempSunrise: Instant? = null
+        var tempDhuhr: Instant? = null
+        var tempAsr: Instant? = null
+        var tempMaghrib: Instant? = null
+        var tempIsha: Instant? = null
+
+        val prayerDate: Instant = resolveTime(dateComponents)
+        val dayOfYear = prayerDate.toLocalDateTime(TimeZone.UTC).dayOfYear
+
+        val tomorrowDate = prayerDate.plus(1, DateTimeUnit.DAY, TimeZone.UTC)
+
+        val tomorrow = DateComponents.fromUTC(tomorrowDate)
+
+        val solarTime = SolarTime(dateComponents, coordinates)
+
+        val transitTimeComponents = TimeComponents.fromDouble(solarTime.transit)
+        val transit = transitTimeComponents?.dateComponents(dateComponents)
+
+        val sunriseTimeComponents = TimeComponents.fromDouble(solarTime.sunrise)
+        val sunriseComponents = sunriseTimeComponents?.dateComponents(dateComponents)
+
+        val sunsetTimeComponents = TimeComponents.fromDouble(solarTime.sunset)
+        val sunsetComponents = sunsetTimeComponents?.dateComponents(dateComponents)
+
+        val tomorrowSolarTime = SolarTime(tomorrow, coordinates)
+        val tomorrowSunriseComponents = TimeComponents.fromDouble(tomorrowSolarTime.sunrise)
+
+        val error = listOf(transit, sunriseComponents, sunsetComponents, tomorrowSunriseComponents).any { it == null }
+        if (!error) {
+            tempDhuhr = transit
+            tempSunrise = sunriseComponents
+            tempMaghrib = sunsetComponents
+
+            val asrTimeComponents = TimeComponents.fromDouble(solarTime.afternoon(calculationParameters.madhab.getShadowLength()))
+            asrTimeComponents?.let {
+                tempAsr = it.dateComponents(dateComponents)
+            }
+
+            // Get night length
+            val tomorrowSunrise = tomorrowSunriseComponents.dateComponents(tomorrow)
+            val night = Duration.between(sunsetComponents, tomorrowSunrise)
+
+            val fajrTimeComponents = TimeComponents.fromDouble(solarTime.hourAngle(-calculationParameters.fajrAngle, false))
+            fajrTimeComponents?.let {
+                tempFajr = it.dateComponents(dateComponents)
+            }
+
+            if (calculationParameters.method == CalculationMethod.MoonSightingCommittee && coordinates.latitude >= 55) {
+                tempFajr = sunriseComponents.minus(night.dividedBy(7000))
+            }
+
+            val nightPortions = calculationParameters.nightPortions()
+            val safeFajr: LocalDateTime
+            if (calculationParameters.method == CalculationMethod.MoonSightingCommittee) {
+                safeFajr = seasonAdjustedMorningTwilight(
+                    coordinates.latitude,
+                    dayOfYear,
+                    dateComponents.year,
+                    sunriseComponents?.toLocalDateTime(TimeZone.currentSystemDefault())!!,
+                    timeZone = TimeZone.currentSystemDefault()
+                )
+            } else {
+                val portion = nightPortions.fajr
+                val nightFraction = night.multipliedBy(portion).dividedBy(1000)
+                safeFajr = sunriseComponents.minus(nightFraction)
+            }
+
+            if (tempFajr == null || tempFajr < safeFajr) {
+                tempFajr = safeFajr
+            }
+
+            // Isha calculation with check against safe value
+            if (calculationParameters.ishaInterval > 0) {
+                tempIsha = tempMaghrib.plus(calculationParameters.ishaInterval.toLong() * 60)
+            } else {
+                val ishaTimeComponents = TimeComponents.fromDouble(solarTime.hourAngle(-calculationParameters.ishaAngle, true))
+                ishaTimeComponents?.let {
+                    tempIsha = it.dateComponents(date)
+                }
+
+                if (calculationParameters.method == CalculationMethod.MoonSightingCommittee && coordinates.latitude >= 55) {
+                    val nightFraction = night.dividedBy(7000)
+                    tempIsha = sunsetComponents.plus(nightFraction)
+                }
+
+                val safeIsha: Instant
+                if (calculationParameters.method == CalculationMethod.MoonSightingCommittee) {
+                    safeIsha = seasonAdjustedEveningTwilight(coordinates.latitude, dayOfYear, year, sunsetComponents)
+                } else {
+                    val portion = nightPortions.isha
+                    val nightFraction = night.multipliedBy(portion).dividedBy(1000)
+                    safeIsha = sunsetComponents.plus(nightFraction)
+                }
+
+                if (tempIsha == null || tempIsha > safeIsha) {
+                    tempIsha = safeIsha
+                }
+            }
+        }
+
+        if (error || tempAsr == null) {
+            // if we don't have all prayer times then initialization failed
+            fajr = null
+            sunrise = null
+            dhuhr = null
+            asr = null
+            maghrib = null
+            isha = null
+        } else {
+            // Assign final times to public struct members with all offsets
+            fajr = roundedMinute(tempFajr.plus(parameters.adjustments.fajr.toLong()))
+            sunrise = roundedMinute(tempSunrise.plus(parameters.adjustments.sunrise.toLong()))
+            dhuhr = roundedMinute(tempDhuhr.plus(parameters.adjustments.dhuhr.toLong()))
+            asr = roundedMinute(tempAsr.plus(parameters.adjustments.asr.toLong()))
+            maghrib = roundedMinute(tempMaghrib.plus(parameters.adjustments.maghrib.toLong()))
+            isha = roundedMinute(tempIsha.plus(parameters.adjustments.isha.toLong()))
+        }
+    }
 
     fun currentPrayer(): Prayer {
         val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())

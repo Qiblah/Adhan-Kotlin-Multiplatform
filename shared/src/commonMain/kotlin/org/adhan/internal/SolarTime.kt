@@ -73,7 +73,7 @@ class SolarTime(
             δ3 = nextSolar.declination
         )
     }
-    private fun hourAngle(angle: Double, afterTransit: Boolean): Double {
+    fun hourAngle(angle: Double, afterTransit: Boolean): Double {
         return Astronomical.correctedHourAngle(
             h0 = angle,
             m0 = approximateTransit,

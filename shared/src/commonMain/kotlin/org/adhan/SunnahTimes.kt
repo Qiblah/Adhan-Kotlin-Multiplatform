@@ -9,8 +9,8 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
 
 class SunnahTimes(prayerTimes: PrayerTimes) {
-    val middleOfTheNight: LocalDateTime
-    val lastThirdOfTheNight: LocalDateTime
+//    val middleOfTheNight: LocalDateTime
+//    val lastThirdOfTheNight: LocalDateTime
 
     init {
         // Assuming CalendarUtil.resolveTime returns a LocalDateTime
@@ -30,17 +30,16 @@ class SunnahTimes(prayerTimes: PrayerTimes) {
         )
 
         // Calculate the duration between Maghrib and Fajr in seconds
-        val nightDurationInSeconds = Duration.between(
-            prayerTimes.maghrib,
-            tomorrowPrayerTimes.fajr
-        ).inWholeSeconds
+//        val nightDurationInSeconds = Duration.between(
+//            prayerTimes.maghrib,
+//            tomorrowPrayerTimes.fajr
+//        ).inWholeSeconds
 
         // Calculate middle of the night and last third of the night
-        middleOfTheNight = prayerTimes.maghrib.plus((nightDurationInSeconds / 2).seconds)
-        lastThirdOfTheNight = prayerTimes.maghrib.plus((nightDurationInSeconds * 2 / 3).seconds)
-
+//        middleOfTheNight = prayerTimes.maghrib.plus((nightDurationInSeconds / 2).seconds)
+//        lastThirdOfTheNight = prayerTimes.maghrib.plus((nightDurationInSeconds * 2 / 3).seconds)
         // If you have rounding to the nearest minute in CalendarUtil, apply it here:
         // middleOfTheNight = CalendarUtil.roundToNearestMinute(middleOfTheNight)
         // lastThirdOfTheNight = CalendarUtil.roundToNearestMinute(lastThirdOfTheNight)
     }
-}}
+}

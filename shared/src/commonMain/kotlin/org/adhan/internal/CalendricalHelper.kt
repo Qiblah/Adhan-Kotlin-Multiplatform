@@ -4,34 +4,61 @@ import kotlinx.datetime.*
 
 object CalendricalHelper {
 
+    /**
+     * The Julian Day for a given Gregorian date
+     * @param year the year
+     * @param month the month
+     * @param day the day
+     * @return the julian day
+     */
     fun julianDay(year: Int, month: Int, day: Int): Double {
         return julianDay(year, month, day, 0.0)
     }
 
+    /**
+     * The Julian Day for a given date
+     * @param instant the date
+     * @return the julian day
+     */
     fun julianDay(instant: Instant): Double {
         val dateTime = instant.toLocalDateTime(TimeZone.UTC)
         return julianDay(
-            dateTime.year, dateTime.monthNumber, dateTime.dayOfMonth,
-            dateTime.hour + dateTime.minute / 60.0
+            year = dateTime.year,
+            month = dateTime.monthNumber,
+            day = dateTime.dayOfMonth,
+            hours = dateTime.hour + dateTime.minute / 60.0
         )
     }
 
+    /**
+     * The Julian Day for a given Gregorian date
+     * @param year the year
+     * @param month the month
+     * @param day the day
+     * @param hours hours
+     * @return the julian day
+     */
     private fun julianDay(year: Int, month: Int, day: Int, hours: Double): Double {
         // Equation from Astronomical Algorithms page 60
-        val Y = if (month > 2) year else year - 1
-        val M = if (month > 2) month else month + 12
-        val D = day + hours / 24.0
+        val y = if (month > 2) year else year - 1
+        val m = if (month > 2) month else month + 12
+        val d = day + hours / 24.0
 
-        val A = Y / 100
-        val B = 2 - A + A / 4
+        val a = y / 100
+        val b = 2 - a + a / 4
 
-        val i0 = (365.25 * (Y + 4716)).toInt()
-        val i1 = (30.6001 * (M + 1)).toInt()
-        return i0 + i1 + D + B - 1524.5
+        val i0 = (365.25 * (y + 4716)).toInt()
+        val i1 = (30.6001 * (m + 1)).toInt()
+        return i0 + i1 + d + b - 1524.5
     }
 
-    fun julianCentury(JD: Double): Double {
+    /**
+     * Julian century from the epoch.
+     * @param jd the julian day
+     * @return the julian century from the epoch
+     */
+    fun julianCentury(jd: Double): Double {
         // Equation from Astronomical Algorithms page 163
-        return (JD - 2451545.0) / 36525
+        return (jd - 2451545.0) / 36525
     }
 }

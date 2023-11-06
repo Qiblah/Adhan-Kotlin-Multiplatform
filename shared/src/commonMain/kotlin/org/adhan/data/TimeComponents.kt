@@ -2,7 +2,11 @@ package org.adhan.data
 
 import kotlinx.datetime.*
 
-data class TimeComponents(val hours: Int, val minutes: Int, val seconds: Int) {
+data class TimeComponents(
+    val hours: Int,
+    val minutes: Int,
+    val seconds: Int
+) {
     companion object {
         fun fromDouble(value: Double): TimeComponents? {
             if (value.isInfinite() || value.isNaN()) {

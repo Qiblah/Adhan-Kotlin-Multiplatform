@@ -4,7 +4,11 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-data class DateComponents(val year: Int, val month: Int, val day: Int) {
+data class DateComponents(
+    val year: Int,
+    val month: Int,
+    val day: Int
+) {
     companion object {
         /**
          * Convenience method that returns a DateComponents from a given Instant

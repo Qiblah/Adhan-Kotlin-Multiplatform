@@ -105,7 +105,6 @@ class CalculationParameters {
             HighLatitudeRule.MiddleOfTheNight -> NightPortions(1.0 / 2.0, 1.0 / 2.0)
             HighLatitudeRule.SeventhOfTheNight -> NightPortions(1.0 / 7.0, 1.0 / 7.0)
             HighLatitudeRule.TwilightAngle -> NightPortions(fajrAngle / 60.0, ishaAngle / 60.0)
-            else -> throw IllegalArgumentException("Invalid high latitude rule")
         }
     }
 }

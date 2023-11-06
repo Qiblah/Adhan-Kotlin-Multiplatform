@@ -1,10 +1,8 @@
 package org.adhan
 
 import kotlinx.datetime.*
-import org.adhan.data.CalendarUtil
+import org.adhan.data.CalendarUtil.isLeapYear
 import org.adhan.data.DateComponents
-import org.adhan.internal.Astronomical
-import org.adhan.internal.SolarTime
 import kotlin.math.abs
 import kotlin.math.round
 
@@ -68,10 +66,10 @@ class PrayerTimes(
         sunrise: LocalDateTime,
         timeZone: TimeZone,
     ): LocalDateTime {
-        val a = 75 + ((28.65 / 55.0) * kotlin.math.abs(latitude))
-        val b = 75 + ((19.44 / 55.0) * kotlin.math.abs(latitude))
-        val c = 75 + ((32.74 / 55.0) * kotlin.math.abs(latitude))
-        val d = 75 + ((48.10 / 55.0) * kotlin.math.abs(latitude))
+        val a = 75 + ((28.65 / 55.0) * abs(latitude))
+        val b = 75 + ((19.44 / 55.0) * abs(latitude))
+        val c = 75 + ((32.74 / 55.0) * abs(latitude))
+        val d = 75 + ((48.10 / 55.0) * abs(latitude))
 
         val dyy = daysSinceSolstice(dayOfYear, year, latitude)
 
@@ -84,7 +82,7 @@ class PrayerTimes(
             else -> b + (a - b) / 91.0 * (dyy - 275)
         }
 
-        val adjustmentInSeconds = kotlin.math.round(adjustment * 60.0).toInt()
+        val adjustmentInSeconds = round(adjustment * 60.0).toInt()
 
         // Convert LocalDateTime to Instant for subtracting seconds accurately
         val sunriseInstant = sunrise.toInstant(timeZone)
@@ -127,7 +125,7 @@ class PrayerTimes(
     }
     fun daysSinceSolstice(dayOfYear: Int, year: Int, latitude: Double): Int {
         val northernOffset = 10
-        val isLeapYear = year.isLeapYear()
+        val isLeapYear = isLeapYear(year)
         val southernOffset = if (isLeapYear) 173 else 172
         val daysInYear = if (isLeapYear) 366 else 365
 
@@ -140,11 +138,6 @@ class PrayerTimes(
                 if (it < 0) it + daysInYear else it
             }
         }
-    }
-
-    // Extension function to check for a leap year
-    fun Int.isLeapYear(): Boolean {
-        return (this % 4 == 0 && this % 100 != 0) || (this % 400 == 0)
     }
 
 }

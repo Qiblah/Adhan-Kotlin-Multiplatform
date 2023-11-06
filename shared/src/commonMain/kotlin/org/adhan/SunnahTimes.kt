@@ -1,12 +1,9 @@
 package org.adhan
 
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.plus
 import org.adhan.data.CalendarUtil
 import org.adhan.data.DateComponents
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.seconds
 
 class SunnahTimes(prayerTimes: PrayerTimes) {
 //    val middleOfTheNight: LocalDateTime

@@ -34,8 +34,8 @@ object Astronomical {
         /* Equation from Astronomical Algorithms page 144 */
         val term1 = 218.3165
         val term2 = 481267.8813 * T
-        val Lp = term1 + term2
-        return unwindAngle(Lp)
+        val lp = term1 + term2
+        return unwindAngle(lp)
     }
 
     /**

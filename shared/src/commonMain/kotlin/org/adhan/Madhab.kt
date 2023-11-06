@@ -18,8 +18,8 @@ enum class Madhab {
 
     fun getShadowLength(): ShadowLength {
         return when (this) {
-            Shafi -> ShadowLength.SINGLE
-            Hanafi -> ShadowLength.DOUBLE
+            Shafi -> ShadowLength.Single
+            Hanafi -> ShadowLength.Double
         }
     }
 }

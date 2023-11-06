@@ -1,42 +1,36 @@
 package org.adhan
 
-import kotlinx.datetime.LocalDateTime
-import org.adhan.data.CalendarUtil
-import org.adhan.data.DateComponents
-import kotlin.time.Duration.Companion.days
+import kotlinx.datetime.*
+import kotlin.math.abs
 
 class SunnahTimes(prayerTimes: PrayerTimes) {
-//    val middleOfTheNight: LocalDateTime
-//    val lastThirdOfTheNight: LocalDateTime
+
+    /* The midpoint between Maghrib and Fajr */
+    val middleOfTheNight: LocalDateTime
+
+    /* The beginning of the last third of the period between Maghrib and Fajr,
+         a recommended time to perform Qiyam */
+    val lastThirdOfTheNight: LocalDateTime
 
     init {
-        // Assuming CalendarUtil.resolveTime returns a LocalDateTime
-        val currentPrayerTimesDate = CalendarUtil.resolveTime(prayerTimes.dateComponents)
+        // Assuming we have a timezone. For accurate calculations, it should be the timezone relevant to the prayer times.
+        val timezone = TimeZone.currentSystemDefault()
 
-        // Add one day to get "tomorrow"
-        val tomorrowPrayerTimesDate = currentPrayerTimesDate + 1.days
-
-        // Assuming we can create a DateComponents instance from a LocalDateTime
-        val tomorrowDateComponents = DateComponents.from(tomorrowPrayerTimesDate)
-
-        // Create PrayerTimes for tomorrow
-        val tomorrowPrayerTimes = PrayerTimes(
-            prayerTimes.coordinates,
-            tomorrowDateComponents,
-            prayerTimes.calculationParameters
+        // Convert maghrib and fajr to Instant for arithmetic operations
+        val maghribInstant = prayerTimes.maghrib!!.toInstant(timezone)
+        val nextDayFajr = LocalDateTime(
+            year = prayerTimes.dateComponents.year,
+            monthNumber = prayerTimes.dateComponents.month,
+            dayOfMonth = prayerTimes.dateComponents.day + 1,
+            hour = prayerTimes.fajr!!.hour,
+            minute = prayerTimes.fajr.minute,
+            second = prayerTimes.fajr.second
         )
+        val fajrInstant = nextDayFajr.toInstant(timezone)
 
-        // Calculate the duration between Maghrib and Fajr in seconds
-//        val nightDurationInSeconds = Duration.between(
-//            prayerTimes.maghrib,
-//            tomorrowPrayerTimes.fajr
-//        ).inWholeSeconds
+        val nightDurationInSeconds = abs(fajrInstant.epochSeconds - maghribInstant.epochSeconds)
 
-        // Calculate middle of the night and last third of the night
-//        middleOfTheNight = prayerTimes.maghrib.plus((nightDurationInSeconds / 2).seconds)
-//        lastThirdOfTheNight = prayerTimes.maghrib.plus((nightDurationInSeconds * 2 / 3).seconds)
-        // If you have rounding to the nearest minute in CalendarUtil, apply it here:
-        // middleOfTheNight = CalendarUtil.roundToNearestMinute(middleOfTheNight)
-        // lastThirdOfTheNight = CalendarUtil.roundToNearestMinute(lastThirdOfTheNight)
+        middleOfTheNight = maghribInstant.plus(nightDurationInSeconds / 2, DateTimeUnit.SECOND, timezone).toLocalDateTime(timezone)
+        lastThirdOfTheNight = maghribInstant.plus(2 * nightDurationInSeconds / 3, DateTimeUnit.SECOND, timezone).toLocalDateTime(timezone)
     }
 }

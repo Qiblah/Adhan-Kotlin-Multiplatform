@@ -16,6 +16,10 @@ enum class Madhab {
      */
     Hanafi;
 
+    /**
+     * Gets the shadow length for calculating Asr.
+     * @return the shadow length
+     */
     fun getShadowLength(): ShadowLength {
         return when (this) {
             Shafi -> ShadowLength.Single

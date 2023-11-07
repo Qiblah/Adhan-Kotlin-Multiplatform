@@ -23,8 +23,8 @@ class SunnahTimes(prayerTimes: PrayerTimes) {
             monthNumber = prayerTimes.dateComponents.month,
             dayOfMonth = prayerTimes.dateComponents.day + 1,
             hour = prayerTimes.fajr!!.hour,
-            minute = prayerTimes.fajr.minute,
-            second = prayerTimes.fajr.second
+            minute = prayerTimes.fajr!!.minute,
+            second = prayerTimes.fajr!!.second
         )
         val fajrInstant = nextDayFajr.toInstant(timezone)
 

@@ -2,13 +2,10 @@ package org.adhan
 
 import kotlinx.datetime.*
 import org.adhan.data.CalendarUtil.isLeapYear
-import org.adhan.data.CalendarUtil.resolveTime
-import org.adhan.data.CalendarUtil.roundedMinute
 import org.adhan.data.DateComponents
-import org.adhan.data.TimeComponents
 import org.adhan.internal.SolarTime
-import kotlin.math.*
-import kotlin.time.Duration
+import kotlin.math.abs
+import kotlin.math.round
 
 class PrayerTimes(
     val coordinates: Coordinates,
@@ -31,33 +28,27 @@ class PrayerTimes(
         val solarTimeToday = SolarTime(dateComponents, coordinates)
         val solarTimeTomorrow = calculateSolarTimeForTomorrow(dateComponents)
 
-        fajr = calculateFajr(solarTimeToday, solarTimeTomorrow)
+        fajr = calculateFajr(solarTimeToday)
         sunrise = calculateSunrise(solarTimeToday)
         dhuhr = calculateDhuhr(solarTimeToday)
         asr = calculateAsr(solarTimeToday)
         maghrib = calculateMaghrib(solarTimeToday)
-        isha = calculateIsha(solarTimeToday, solarTimeTomorrow)
+        isha = calculateIsha(solarTimeToday)
     }
     private fun calculateSolarTimeForTomorrow(dateComponents: DateComponents): SolarTime {
         val tomorrowDateComponents = dateComponents.copy(day = dateComponents.day + 1)
         return SolarTime(tomorrowDateComponents, coordinates)
     }
 
-    private fun calculateFajr(solarTimeToday: SolarTime, solarTimeTomorrow: SolarTime): LocalDateTime? {
-        // Get the hour angle for Fajr
+    private fun calculateFajr(solarTimeToday: SolarTime): LocalDateTime? {
         val fajrHourAngle = solarTimeToday.hourAngle(-calculationParameters.fajrAngle, false)
-
-        // Convert the hour angle to a LocalDateTime object
         return hourAngleToDateTime(fajrHourAngle, dateComponents)
     }
 
-    // Helper function to convert an hour angle to LocalDateTime
     private fun hourAngleToDateTime(hourAngle: Double, dateComponents: DateComponents): LocalDateTime? {
-        // Convert the hour angle into hours and minutes
         val hours = hourAngle.toInt()
         val minutes = ((hourAngle - hours) * 60).toInt()
 
-        // Construct the LocalDateTime object
         return try {
             LocalDateTime(
                 dateComponents.year,
@@ -91,20 +82,10 @@ class PrayerTimes(
         return hourAngleToDateTime(maghribHourAngle, dateComponents)
     }
 
-    private fun calculateIsha(solarTimeToday: SolarTime, solarTimeTomorrow: SolarTime): LocalDateTime? {
+    private fun calculateIsha(solarTimeToday: SolarTime): LocalDateTime? {
         val ishaHourAngle = solarTimeToday.hourAngle(-calculationParameters.ishaAngle, true)
         return hourAngleToDateTime(ishaHourAngle, dateComponents)
     }
-
-//    private fun calculateAdjustedTime(
-//        sunriseToday: LocalDateTime,
-//        sunriseTomorrow: LocalDateTime,
-//        portion: Double
-//    ): LocalDateTime {
-//        val difference = sunriseTomorrow.toInstant(TimeZone.UTC).epochSeconds - sunriseToday.toInstant(TimeZone.UTC).epochSeconds
-//        val portionInSeconds = (portion * difference).roundToInt()
-//        return sunriseToday
-//    }
 
     fun currentPrayer(): Prayer {
         val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())

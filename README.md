@@ -1,6 +1,7 @@
 # Adhan Kotlin Multiplatform
-![adhan thumbnail](https://github.com/Farouk-abichou/Adhan-Kotlin-Multiplatform/assets/117727520/c56620a0-6c99-435b-8142-efb76e1b077d)
-
+<p align="center">
+  <img src=![adhan thumbnail](https://github.com/Farouk-abichou/Adhan-Kotlin-Multiplatform/assets/117727520/c56620a0-6c99-435b-8142-efb76e1b077d)/>
+</p>
 > :warning: **In Progress**: This library is currently under development. Functionality might be incomplete and subject to change.
 
 Adhan Kotlin Multiplatform is a well-tested and well-documented library for calculating Islamic prayer times, now available for multiplatform development. Adhan Kotlin Multiplatform is written to be compatible with Kotlin Multiplatform projects, enabling use on iOS, Android, Web, and desktop applications.

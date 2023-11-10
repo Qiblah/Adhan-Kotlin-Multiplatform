@@ -1,6 +1,6 @@
-<p align="center">
+
 # Adhan Kotlin Multiplatform
-</p>
+
 <p align="center">
   <img src="https://github.com/Farouk-abichou/Adhan-Kotlin-Multiplatform/assets/117727520/c56620a0-6c99-435b-8142-efb76e1b077d"/>
 </p>

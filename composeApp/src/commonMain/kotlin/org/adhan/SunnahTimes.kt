@@ -14,10 +14,8 @@ class SunnahTimes(prayerTimes: PrayerTimes) {
     private val lastThirdOfTheNight: LocalDateTime
 
     init {
-        // Assuming we have a timezone. For accurate calculations, it should be the timezone relevant to the prayer times.
         val timezone = TimeZone.currentSystemDefault()
 
-        // Convert maghrib and fajr to Instant for arithmetic operations
         val maghribInstant = prayerTimes.maghrib!!.toInstant(timezone)
         val nextDayFajr = LocalDateTime(
             year = prayerTimes.dateComponents.year,

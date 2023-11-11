@@ -5,7 +5,24 @@ plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.android.application)
     alias(libs.plugins.buildConfig)
+//    id("maven-publish")
 }
+
+//group = "com.example"
+//version = "1.0"
+
+//publishing {
+//    repositories {
+//        maven {
+//            name = "Adhan"
+//            url = uri("https://github.com/Farouk-abichou/Adhan-Kotlin-Multiplatform")
+//            credentials {
+//                username = System.getenv("farouk-abichou")
+//                password = System.getenv("")
+//            }
+//        }
+//    }
+//}
 
 kotlin {
     androidTarget {

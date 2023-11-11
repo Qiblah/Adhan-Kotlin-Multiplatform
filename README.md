@@ -1,26 +1,13 @@
-# Compose Multiplatform Application
 
-## Before running!
- - check your system with [KDoctor](https://github.com/Kotlin/kdoctor)
- - install JDK 17 on your machine
- - add `local.properties` file to the project root and set a path to Android SDK there
+# Adhan Kotlin Multiplatform
+> :warning: **In Progress**: This library is currently under development. Functionality might be incomplete and subject to change.
 
-### Android
-To run the application on android device/emulator:  
- - open project in Android Studio and run imported android run configuration
+<p align="center">
+  <img src="https://github.com/Farouk-abichou/Adhan-Kotlin-Multiplatform/assets/117727520/c56620a0-6c99-435b-8142-efb76e1b077d"/>
+</p>
 
-To build the application bundle:
- - run `./gradlew :composeApp:assembleDebug`
- - find `.apk` file in `composeApp/build/outputs/apk/debug/composeApp-debug.apk`
+Adhan Kotlin Multiplatform is a well-tested and well-documented library for calculating Islamic prayer times, now available for multiplatform development. Adhan Kotlin Multiplatform is written to be compatible with Kotlin Multiplatform projects, enabling use on iOS, Android, Web, and desktop applications.
 
-### Desktop
-Run the desktop application: `./gradlew :composeApp:run`
+All astronomical calculations within the library are high precision equations adapted from the book ["Astronomical Algorithms" by Jean Meeus](https://shopatsky.com/collections/willmann-bell). This authoritative resource is highly recommended by the Astronomical Applications Department of the U.S. Naval Observatory and the Earth System Research Laboratory of the National Oceanic and Atmospheric Administration for its reliability and precision.
 
-### iOS
-To run the application on iPhone device/simulator:
- - Open `iosApp/iosApp.xcproject` in Xcode and run standard configuration
- - Or use [Kotlin Multiplatform Mobile plugin](https://plugins.jetbrains.com/plugin/14936-kotlin-multiplatform-mobile) for Android Studio
-
-### Browser
-Run the browser application: `./gradlew :composeApp:jsBrowserDevelopmentRun`
-
+For developers interested in implementations of Adhan in other programming languages, please refer to the parent repo, [Adhan](https://github.com/batoulapps/Adhan), where multiple language implementations are available.

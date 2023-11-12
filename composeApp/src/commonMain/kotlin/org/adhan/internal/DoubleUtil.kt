@@ -20,8 +20,6 @@ object DoubleUtil {
             angle - (360 * round(angle / 360))
         }
     }
-    private const val DEGREES_TO_RADIANS = 0.017453292519943295
-    private const val RADIANS_TO_DEGREES = 57.29577951308232
     /**
      * Converts an angle measured in degrees to an approximately
      * equivalent angle measured in radians.  The conversion from
@@ -32,7 +30,7 @@ object DoubleUtil {
      * in radians.
      */
     fun toRadians(angDeg: Double): Double {
-        return angDeg * DEGREES_TO_RADIANS
+        return angDeg * 0.017453292519943295
     }
 
     /**
@@ -47,6 +45,6 @@ object DoubleUtil {
      * in degrees.
      */
     fun toDegrees(angRad: Double): Double {
-        return angRad * RADIANS_TO_DEGREES
+        return angRad * 57.29577951308232
     }
 }

@@ -16,7 +16,7 @@ import org.zephyr.app.adhan.PrayerTimes
 
 @Composable
 internal fun App() = AppTheme {
-    val coordinates = Coordinates(35.8255915, 10.608406)
+    val coordinates = Coordinates(33.531720, 11.114153)
 
     val now = Clock.System.now()
     val currentDate = now.toLocalDateTime(TimeZone.currentSystemDefault())
@@ -30,6 +30,7 @@ internal fun App() = AppTheme {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        Text(text = "Qibla Angle: ${Qibla(coordinates).direction}")
         Text(text = "Fajr: ${prayerTimes.fajr?.time}")
         Text(text = "Sunrise: ${prayerTimes.sunrise?.time}")
         Text(text = "Dhuhr: ${prayerTimes.dhuhr?.time}")
